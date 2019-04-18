@@ -1,24 +1,39 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 
 class App extends Component {
+  state = {
+    percentage: 0,
+    timer: 0,
+    message: ""
+  };
+  updatePercentage = () => {
+    const percentage = Math.round(((Date.now() - new Date().setHours(0, 0, 0, 0)) / 864000) * 100) / 100;
+    this.checkMessage(percentage);
+    this.setState({ percentage });
+  };
+
+  checkMessage = percentage => {
+    if (percentage >= 50 && percentage <= 54) {
+      this.setState({ message: "Mittagspause!" });
+    } else {
+      this.setState({ message: "" });
+    }
+  };
+  componentDidMount() {
+    this.updatePercentage();
+    const timer = setInterval(this.updatePercentage, 10000);
+    this.setState({ timer });
+  }
+  componentWillUnmount() {
+    clearInterval(this.state.timer);
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <div>Es sind bereits {this.state.percentage}% des Tages vorbei.</div>
+          <div>{this.state.message}</div>
         </header>
       </div>
     );
