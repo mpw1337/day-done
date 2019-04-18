@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import VisualizePercentage from "./Components/VisualizePercentage";
 
 class App extends Component {
   state = {
@@ -8,7 +9,7 @@ class App extends Component {
     message: ""
   };
   updatePercentage = () => {
-    const percentage = Math.round(((Date.now() - new Date().setHours(0, 0, 0, 0)) / 864000) * 100) / 100;
+    const percentage = (Date.now() - new Date().setHours(0, 0, 0, 0)) / 864000;
     this.checkMessage(percentage);
     this.setState({ percentage });
   };
@@ -22,7 +23,7 @@ class App extends Component {
   };
   componentDidMount() {
     this.updatePercentage();
-    const timer = setInterval(this.updatePercentage, 10000);
+    const timer = setInterval(this.updatePercentage, 2000);
     this.setState({ timer });
   }
   componentWillUnmount() {
@@ -32,7 +33,11 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <div>Es sind bereits {this.state.percentage}% des Tages vorbei.</div>
+          <div>Es sind bereits {this.state.percentage.toFixed(3)}% des Tages vorbei.</div>
+          Prozent:
+          <VisualizePercentage percentage={this.state.percentage} color="#00a000" />
+          Promille:
+          <VisualizePercentage percentage={(this.state.percentage % 1) * 100} color="#d21738" />
           <div>{this.state.message}</div>
         </header>
       </div>
